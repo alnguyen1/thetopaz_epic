@@ -5,16 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef32fcd6-4616-4be2-87c0-dada4e4599a5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/properties/test.properties" beforeDir="false" afterPath="$PROJECT_DIR$/properties/test.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ColumnRobot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ColumnRobot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FlooringRobot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlooringRobot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MailItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MailItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MailRoom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MailRoom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Robot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Simulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Simulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,9 +38,15 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/tlang/Desktop/thetopaz_epic/properties",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\tlang\Desktop\thetopaz_epic\properties" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />

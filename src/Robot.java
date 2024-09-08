@@ -57,7 +57,6 @@ public abstract class Robot implements Tickable{
 
     void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
         ListIterator<MailItem> iter = robot.items.listIterator();
-        System.out.println("Transfer active");
         while(iter.hasNext()) {
             MailItem item = iter.next();
             this.add(item); //Hand it over

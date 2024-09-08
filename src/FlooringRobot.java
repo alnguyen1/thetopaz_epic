@@ -1,19 +1,26 @@
+import java.util.LinkedList;
+import java.util.List;
+
 public class FlooringRobot extends Robot {
     private boolean waitingLeft;
     private boolean waitingRight;
 
+    private final ColumnRobot leftColumnRobot;
+    private final ColumnRobot rightColumnRobot;
+
     enum State {
         IDLE,
-        TRAVEL_LEFT,
-        TRAVEL_RIGHT
+        COLLECTING_LEFT,
+        COLLECTING_RIGHT,
+        DELIVERING_RIGHT,
+        DELIVERING_LEFT
     }
-
-    private int arrivalLeft;
-    private int arrivalRight;
     private State state;
 
-    public FlooringRobot(Simulation simulation) {
+    public FlooringRobot(Simulation simulation, ColumnRobot leftColumnRobot, ColumnRobot rightColumnRobot) {
         super(simulation);
+        this.leftColumnRobot = leftColumnRobot;
+        this.rightColumnRobot = rightColumnRobot;
         this.waitingLeft = false;
         this.waitingRight = false;
         state = State.IDLE;
@@ -21,65 +28,98 @@ public class FlooringRobot extends Robot {
 
     @Override
     public void tick() {
-        if (getItems().isEmpty()) {
-            state = State.IDLE;
 
-            // Handle waiting status
-            if (waitingLeft && !waitingRight) {
-                state = State.TRAVEL_LEFT;
-                this.waitingLeft = false;
-            } else if (!waitingLeft && waitingRight) {
-                state = State.TRAVEL_RIGHT;
-                this.waitingRight = false;
-            }
-            // Both waiting, choose based on arrival times
-            else if (waitingLeft && waitingRight) {
-                if (arrivalLeft < arrivalRight) {
-                    move(Building.Direction.LEFT);
-                    this.waitingLeft = false;
-                    state = State.TRAVEL_LEFT;
-                } else {
-                    move(Building.Direction.RIGHT);
-                    this.waitingRight = false;
-                    state = State.TRAVEL_RIGHT;
+        // if delivering continue delivering
+        if (!getItems().isEmpty()) {
+            // see if anything is deliverable
+            List<MailItem> deliverableItems = new LinkedList<>();
+
+            for (MailItem item : getItems()) {
+                if (item.myRoom() == getRoom()) {
+                    deliverableItems.add(item);
                 }
             }
-        } else {
-            if(getRoom() == 1) {
-                state = State.TRAVEL_RIGHT;
-            }
-            if(getRoom() == Building.getBuilding().NUMROOMS) {
-                state = State.TRAVEL_LEFT;
-            }
-            // Delivering items to rooms
-            if (getRoom() == getItems().getFirst().myRoom()) {
-                // Deliver all relevant items to the room
+            if (!deliverableItems.isEmpty()) {
                 do {
-                    MailItem currentItem = getItems().removeFirst();
+                    MailItem currentItem = deliverableItems.removeFirst();
+                    getItems().remove(currentItem);
                     setLoad(getLoad() - currentItem.getWeight());
                     Simulation.deliver(currentItem);
-                } while (!getItems().isEmpty() && getRoom() == getItems().getFirst().myRoom());
+                } while (!deliverableItems.isEmpty());
+                if (getItems().isEmpty()) {
+                    state = State.IDLE;
+                }
+            }
+            // if nothing is deliverable, keep moving.
+            else {
+                if(state == State.DELIVERING_LEFT) {
+                    move(Building.Direction.LEFT);
+                } else if (state == State.DELIVERING_RIGHT) {
+                    move(Building.Direction.RIGHT);
+                }
             }
         }
 
-        switch (state) {
-            case TRAVEL_LEFT:
-                if (getRoom() > 1) {
-                    move(Building.Direction.LEFT);
-                } else {
-                    state = State.IDLE;
-                }
-                break;
-            case TRAVEL_RIGHT:
-                if (getRoom() < Building.getBuilding().NUMROOMS) {
-                    move(Building.Direction.RIGHT);
-                } else {
-                    state = State.IDLE;
-                }
-                break;
-            default:
-                break;
+
+
+        // check to see if next to column robot that is waiting.
+        else if (leftColumnRobot.isWaiting() && leftColumnRobot.getFloor() == getFloor() && getRoom() == 1) {
+            transfer(leftColumnRobot);
+            leftColumnRobot.setLoad(0);
+            leftColumnRobot.setWaiting(false);
+            state = State.DELIVERING_RIGHT;
         }
+
+        else if (rightColumnRobot.isWaiting() && rightColumnRobot.getFloor() == getFloor()
+                            && getRoom() == Building.getBuilding().NUMROOMS) {
+            transfer(rightColumnRobot);
+            rightColumnRobot.setLoad(0);
+            rightColumnRobot.setWaiting(false);
+            state = State.DELIVERING_LEFT;
+        }
+
+        // if moving towards a robot
+        else if(state == State.COLLECTING_LEFT) {
+            move(Building.Direction.LEFT);
+        }
+
+        // if moving towards a robot
+        else if (state == State.COLLECTING_RIGHT) {
+            move(Building.Direction.RIGHT);
+        }
+
+        // check to see if newly waiting robot
+        else if (leftColumnRobot.isWaiting() && rightColumnRobot.isWaiting() && leftColumnRobot.getFloor() == getFloor()
+                            && rightColumnRobot.getFloor() == getFloor()) {
+            int leftTime = leftColumnRobot.getMinArrivalTime();
+            int rightTime = rightColumnRobot.getMinArrivalTime();
+            // right is smaller means go right
+            if(leftTime > rightTime) {
+                state = State.COLLECTING_RIGHT;
+                move(Building.Direction.RIGHT);
+            }
+            else {
+                state = State.COLLECTING_LEFT;
+                move(Building.Direction.LEFT);
+            }
+        }
+
+        else if (leftColumnRobot.isWaiting() && leftColumnRobot.getFloor() == getFloor()) {
+            state = State.COLLECTING_LEFT;
+            move(Building.Direction.LEFT);
+        }
+
+        else if (rightColumnRobot.isWaiting() && rightColumnRobot.getFloor() == getFloor()) {
+            state = State.COLLECTING_RIGHT;
+            move(Building.Direction.RIGHT);
+        }
+
+        else{
+            state = State.IDLE;
+        }
+
+
+
     }
 
     @Override
@@ -98,14 +138,6 @@ public class FlooringRobot extends Robot {
 
     public boolean isWaitingRight() {
         return waitingRight;
-    }
-
-    public void setArrivalLeft(int arrivalLeft) {
-        this.arrivalLeft = arrivalLeft;
-    }
-
-    public void setArrivalRight(int arrivalRight) {
-        this.arrivalRight = arrivalRight;
     }
 
     public void setState(State state) {

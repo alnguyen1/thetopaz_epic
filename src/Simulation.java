@@ -71,16 +71,17 @@ public class Simulation {
                 }
             }
             case Mode.FLOORING -> {
-                for (int i = 1; i < numRobots + 2; i++) {
-                    FlooringRobot flooringRobot = new FlooringRobot(this);
-                    flooringRobot.place(i,1);
-                    activeRobots.add(flooringRobot);
-                }
+
                 ColumnRobot leftRobot = new ColumnRobot(this,ColumnRobot.Side.LEFT);
                 ColumnRobot rightRobot = new ColumnRobot(this, ColumnRobot.Side.RIGHT);
                 idleRobots.add(leftRobot);
                 idleRobots.add(rightRobot);
 
+                for (int i = 1; i < numRobots + 2; i++) {
+                    FlooringRobot flooringRobot = new FlooringRobot(this,leftRobot,rightRobot);
+                    flooringRobot.place(i,1);
+                    activeRobots.add(flooringRobot);
+                }
             }
         }
 
@@ -98,6 +99,7 @@ public class Simulation {
             System.out.printf("About to tick: " + activeRobot.toString() + "\n");
             activeRobot.tick();
         }
+
         robotDispatch();  // dispatch a robot if conditions are met
         // These are returning robots who shouldn't be dispatched in the previous step
         ListIterator<Robot> iter = deactivatingRobots.listIterator();
@@ -146,7 +148,6 @@ public class Simulation {
     }
 
     void robotDispatch() { // Can dispatch at most one robot; it needs to move out of the way for the next
-        System.out.println("Dispatch at time = " + now());
         switch (mode) {
             case Mode.CYCLING -> {
                 // Need an idle robot and space to dispatch (could be a traffic jam)
@@ -158,6 +159,7 @@ public class Simulation {
                         // Room order for left to right delivery
                         robot.sort();
                         activeRobots.add(robot);
+                        System.out.println("Dispatch at time = " + now());
                         System.out.println("Dispatch @ " + now() +
                                 " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
                         robot.place(0, 0);
@@ -165,25 +167,29 @@ public class Simulation {
                 }
             }
             case Mode.FLOORING -> {
-                int fwei = mailroom.floorWithEarliestItem();
-                if (!idleRobots.isEmpty() && (fwei >= 0)) {
-                    ColumnRobot robot = (ColumnRobot) idleRobots.remove();
-                    ColumnRobot.Side side = robot.getSide();
-                    if(side == ColumnRobot.Side.LEFT) {
-                        mailroom.loadRobot(fwei, robot);
-                        robot.sort();
-                        activeRobots.add(robot);
-                        System.out.println("Dispatch @ " + now() +
-                                " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
-                        robot.place(0, 0);
-                    }
-                    if(side == ColumnRobot.Side.RIGHT) {
-                        mailroom.loadRobot(fwei, robot);
-                        robot.sort();
-                        activeRobots.add(robot);
-                        System.out.println("Dispatch @ " + now() +
-                                " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
-                        robot.place(0, Building.getBuilding().NUMROOMS + 1);
+                while(mailroom.floorWithEarliestItem() >= 0 && !(idleRobots.isEmpty())) {
+                    int fwei = mailroom.floorWithEarliestItem();
+                    if (!idleRobots.isEmpty() && (fwei >= 0)) {
+                        ColumnRobot robot = (ColumnRobot) idleRobots.remove();
+                        ColumnRobot.Side side = robot.getSide();
+                        if (side == ColumnRobot.Side.LEFT) {
+                            mailroom.loadRobot(fwei, robot);
+                            robot.sort();
+                            activeRobots.add(robot);
+                            System.out.println("Dispatch at time = " + now());
+                            System.out.println("Dispatch @ " + now() +
+                                    " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
+                            robot.place(0, 0);
+                        }
+                        if (side == ColumnRobot.Side.RIGHT) {
+                            mailroom.loadRobot(fwei, robot);
+                            robot.sort();
+                            activeRobots.add(robot);
+                            System.out.println("Dispatch at time = " + now());
+                            System.out.println("Dispatch @ " + now() +
+                                    " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
+                            robot.place(0, Building.getBuilding().NUMROOMS + 1);
+                        }
                     }
                 }
             }

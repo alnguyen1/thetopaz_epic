@@ -2,7 +2,7 @@ import java.util.List;
 
 public class ColumnRobot extends Robot {
     private final Side side;
-    private int arrivalTime;
+    private boolean isWaiting;
 
     public ColumnRobot(Simulation simulation, Side side) {
         super(simulation);
@@ -15,58 +15,35 @@ public class ColumnRobot extends Robot {
 
     @Override
     public void tick() {
+        // no items mean that it is returning
         if (getItems().isEmpty()) {
-            // Return to MailRoom
-            super.move(Building.Direction.DOWN);  // Move towards mailroom
-        } else {
-            arrivalTime = getMinArrivalTime();
-
-            // Identify the flooring robot
-            if (getFloor() == getItems().getFirst().myFloor()) {
-                List<Robot> activeRobots = getSimulation().getActiveRobots();
-                FlooringRobot floorRobot = null;
-
-                for (Robot robot : activeRobots) {
-                    if (robot instanceof FlooringRobot && robot.getFloor() == getFloor()) {
-                        floorRobot = (FlooringRobot) robot;
-                    }
+            super.move(Building.Direction.DOWN);
+        }
+        // items means that it is either waiting or moving up.
+        else {
+            // check to see if moving up
+            if (!(getFloor() == getItems().getFirst().myFloor())) {
+                move(Building.Direction.UP);
+                if(getFloor() == getItems().getFirst().myFloor()) {
+                    isWaiting = true;
                 }
-
-                if (floorRobot != null) {
-                    switch (side) {
-                        case LEFT:
-                            if (floorRobot.getRoom() == 1) {
-                                floorRobot.transfer(this);
-                                floorRobot.setwaitingLeft(false);
-                                floorRobot.setState(FlooringRobot.State.TRAVEL_RIGHT);
-                            } else {
-                                floorRobot.setwaitingLeft(true);
-                                floorRobot.setArrivalLeft(arrivalTime);
-                            }
-                            break;
-
-                        case RIGHT:
-                            if (floorRobot.getRoom() == Building.getBuilding().NUMROOMS) {
-                                floorRobot.transfer(this);
-                                floorRobot.setwaitingRight(false);
-                                floorRobot.setState(FlooringRobot.State.TRAVEL_LEFT);
-                            } else {
-                                floorRobot.setwaitingRight(true);
-                                floorRobot.setArrivalRight(arrivalTime);
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            } else {
-                move(Building.Direction.UP); // Move towards floor
+            }
+            // check to see if its now waiting
+            else {
+                isWaiting = true;
             }
         }
     }
 
     public Side getSide() {
         return side;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
     }
 }
