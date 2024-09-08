@@ -67,7 +67,7 @@ public class Simulation {
         switch(mode) {
             case Mode.CYCLING -> {
                 for (int i = 0; i < numRobots; i++) {
-                    activeRobots.add(new CyclingRobot(this));
+                    idleRobots.add(new CyclingRobot(this));
                 }
             }
             case Mode.FLOORING -> {

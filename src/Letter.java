@@ -6,8 +6,4 @@ public class Letter extends MailItem {
         super(floor,room,arrival);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "Type: " + type;
-    }
 }

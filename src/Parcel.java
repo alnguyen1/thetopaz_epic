@@ -9,11 +9,6 @@ public class Parcel extends MailItem {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + "Weight :" + weight + " Type: " + type;
-    }
-
-    @Override
     public int getWeight() {
         return weight;
     }

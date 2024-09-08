@@ -118,8 +118,6 @@ public class FlooringRobot extends Robot {
             state = State.IDLE;
         }
 
-
-
     }
 
     @Override
