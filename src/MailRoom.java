@@ -56,9 +56,15 @@ public class MailRoom {
     // this function stays
     void loadRobot(int floor, Robot robot) {
         ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
+        boolean firstItem = true;
         while (iter.hasNext()) {  // In timestamp order
             MailItem item = iter.next();
             if(robot.getLoad() + item.getWeight() <= maxCapacity) {
+                if(firstItem) {
+                    firstItem = false;
+                    robot.setMinArrivalTime(item.myArrival());
+                }
+
                 robot.add(item); //Hand it over
                 iter.remove();
             }

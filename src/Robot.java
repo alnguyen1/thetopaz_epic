@@ -13,6 +13,7 @@ public abstract class Robot implements Tickable{
     private int load;
     final private Simulation simulation;
     final private List<MailItem> items = new ArrayList<>();
+    private int minArrivalTime;
 
     public String toString() {
         return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + load;
@@ -56,6 +57,7 @@ public abstract class Robot implements Tickable{
 
     void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
         ListIterator<MailItem> iter = robot.items.listIterator();
+        System.out.println("Transfer active");
         while(iter.hasNext()) {
             MailItem item = iter.next();
             this.add(item); //Hand it over
@@ -88,9 +90,17 @@ public abstract class Robot implements Tickable{
         load += item.getWeight();
     }
 
+    public int getMinArrivalTime() {
+        return minArrivalTime;
+    }
+
+    public void setMinArrivalTime(int newMin) {
+        this.minArrivalTime = newMin;
+    }
     public List<MailItem> getItems() {
         return items;
     }
+
 
     public int getLoad() {
         return load;
@@ -107,4 +117,13 @@ public abstract class Robot implements Tickable{
         Collections.sort(items);
     }
 
+    public void setwaitingLeft(Boolean bool) {
+        return;
+    }
+    public void setwaitingRight(Boolean bool) {
+        return;
+    }
+    public Simulation getSimulation() {
+        return simulation;
+    }
 }

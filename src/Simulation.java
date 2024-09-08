@@ -15,6 +15,8 @@ public class Simulation {
 
     public enum Mode {CYCLING, FLOORING}
 
+    Mode mode;
+
     private Queue<Robot> idleRobots;
     private List<Robot> activeRobots;
     private List<Robot> deactivatingRobots; // Don't treat a robot as both active and idle by swapping directly
@@ -48,7 +50,7 @@ public class Simulation {
         int numRobots = Integer.parseInt(properties.getProperty("robot.number"));
         int robotCapacity = Integer.parseInt(properties.getProperty("robot.capacity"));
         timeout = Integer.parseInt(properties.getProperty("timeout"));
-        Mode mode = Mode.valueOf(properties.getProperty("mode"));
+        mode = Mode.valueOf(properties.getProperty("mode"));
 
         Building.initialise(numFloors, numRooms);
         Building building = Building.getBuilding();
@@ -62,14 +64,23 @@ public class Simulation {
         deactivatingRobots = new LinkedList<>();
 
 
-
         switch(mode) {
-            case Mode.FLOORING -> {
-                for (int i = 0; i < numRobots; i++)
-                    activeRobots.add(new CyclingRobot(this));
-            }
             case Mode.CYCLING -> {
-                System.out.println("wa");
+                for (int i = 0; i < numRobots; i++) {
+                    activeRobots.add(new CyclingRobot(this));
+                }
+            }
+            case Mode.FLOORING -> {
+                for (int i = 1; i < numRobots + 2; i++) {
+                    FlooringRobot flooringRobot = new FlooringRobot(this);
+                    flooringRobot.place(i,1);
+                    activeRobots.add(flooringRobot);
+                }
+                ColumnRobot leftRobot = new ColumnRobot(this,ColumnRobot.Side.LEFT);
+                ColumnRobot rightRobot = new ColumnRobot(this, ColumnRobot.Side.RIGHT);
+                idleRobots.add(leftRobot);
+                idleRobots.add(rightRobot);
+
             }
         }
 
@@ -81,10 +92,11 @@ public class Simulation {
         // External events
         if (waitingToArrive.containsKey(time))
             mailroom.arrive(waitingToArrive.get(time));
-        // Internal events
 
+        // Internal events
         for (Robot activeRobot : activeRobots) {
-            System.out.printf("About to tick: " + activeRobot.toString() + "\n"); activeRobot.tick();
+            System.out.printf("About to tick: " + activeRobot.toString() + "\n");
+            activeRobot.tick();
         }
         robotDispatch();  // dispatch a robot if conditions are met
         // These are returning robots who shouldn't be dispatched in the previous step
@@ -95,7 +107,11 @@ public class Simulation {
             activeRobots.remove(robot);
             idleRobots.add(robot);
         }
+
+
     }
+
+
 
     void run() {
         while (time++ <= endArrival || mailroom.someItems()) {
@@ -131,23 +147,56 @@ public class Simulation {
 
     void robotDispatch() { // Can dispatch at most one robot; it needs to move out of the way for the next
         System.out.println("Dispatch at time = " + now());
-        // Need an idle robot and space to dispatch (could be a traffic jam)
-        if (!idleRobots.isEmpty() && !Building.getBuilding().isOccupied(0,0)) {
-            int fwei = mailroom.floorWithEarliestItem();
-            if (fwei >= 0) {  // Need an item or items to deliver, starting with earliest
-                Robot robot = idleRobots.remove();
-                mailroom.loadRobot(fwei, robot);
-                // Room order for left to right delivery
-                robot.sort();
-                activeRobots.add(robot);
-                System.out.println("Dispatch @ " + now() +
-                        " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
-                robot.place(0, 0);
+        switch (mode) {
+            case Mode.CYCLING -> {
+                // Need an idle robot and space to dispatch (could be a traffic jam)
+                if (!idleRobots.isEmpty() && !Building.getBuilding().isOccupied(0,0)) {
+                    int fwei = mailroom.floorWithEarliestItem();
+                    if (fwei >= 0) {  // Need an item or items to deliver, starting with earliest
+                        Robot robot = idleRobots.remove();
+                        mailroom.loadRobot(fwei, robot);
+                        // Room order for left to right delivery
+                        robot.sort();
+                        activeRobots.add(robot);
+                        System.out.println("Dispatch @ " + now() +
+                                " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
+                        robot.place(0, 0);
+                    }
+                }
+            }
+            case Mode.FLOORING -> {
+                int fwei = mailroom.floorWithEarliestItem();
+                if (!idleRobots.isEmpty() && (fwei >= 0)) {
+                    ColumnRobot robot = (ColumnRobot) idleRobots.remove();
+                    ColumnRobot.Side side = robot.getSide();
+                    if(side == ColumnRobot.Side.LEFT) {
+                        mailroom.loadRobot(fwei, robot);
+                        robot.sort();
+                        activeRobots.add(robot);
+                        System.out.println("Dispatch @ " + now() +
+                                " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
+                        robot.place(0, 0);
+                    }
+                    if(side == ColumnRobot.Side.RIGHT) {
+                        mailroom.loadRobot(fwei, robot);
+                        robot.sort();
+                        activeRobots.add(robot);
+                        System.out.println("Dispatch @ " + now() +
+                                " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
+                        robot.place(0, Building.getBuilding().NUMROOMS + 1);
+                    }
+                }
             }
         }
+
+
     }
 
     public List<Robot> getDeactivatingRobots() {
         return deactivatingRobots;
+    }
+
+    public List<Robot> getActiveRobots() {
+        return activeRobots;
     }
 }

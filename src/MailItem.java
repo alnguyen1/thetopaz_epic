@@ -4,7 +4,7 @@ public class MailItem implements Comparable<MailItem>{
     private final int arrival;
 
     @Override public int compareTo(MailItem i) {
-        int floorDiff = this.floor - i.floor;  // Don't really need this as only deliver to one floor at a time
+        int floorDiff = this.arrival - i.floor;  // Don't really need this as only deliver to one floor at a time
         return (floorDiff == 0) ? this.room - i.room : floorDiff;
     }
 
