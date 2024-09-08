@@ -3,26 +3,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-public class Robot {
+import static java.lang.String.format;
+
+public abstract class Robot implements Tickable{
     private static int count = 1;
     final private String id;
     private int floor;
     private int room;
-    final private MailRoom mailroom;
-    final private List<Letter> letters = new ArrayList<>();
+    private int load;
+    final private Simulation simulation;
+    final private List<MailItem> items = new ArrayList<>();
 
     public String toString() {
-        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + 0 ;
+        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + load;
     }
 
-    Robot(MailRoom mailroom) {
+    Robot(Simulation simulation) {
         this.id = "R" + count++;
-        this.mailroom = mailroom;
+        this.simulation = simulation;
     }
 
     int getFloor() { return floor; }
     int getRoom() { return room; }
-    boolean isEmpty() { return letters.isEmpty(); }
+    boolean isEmpty() { return items.isEmpty(); }
 
     public void place(int floor, int room) {
         Building building = Building.getBuilding();
@@ -31,7 +34,7 @@ public class Robot {
         this.room = room;
     }
 
-    private void move(Building.Direction direction) {
+    public void move(Building.Direction direction) {
         Building building = Building.getBuilding();
         int dfloor, droom;
         switch (direction) {
@@ -46,60 +49,62 @@ public class Robot {
             floor = dfloor; room = droom;
             if (floor == 0) {
                 System.out.printf("About to return: " + this + "\n");
-                mailroom.robotReturn(this);
+                robotReturn(this, simulation.getDeactivatingRobots());
             }
         }
     }
 
     void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
-        ListIterator<Letter> iter = robot.letters.listIterator();
+        ListIterator<MailItem> iter = robot.items.listIterator();
         while(iter.hasNext()) {
-            Letter letter = iter.next();
-            this.add(letter); //Hand it over
+            MailItem item = iter.next();
+            this.add(item); //Hand it over
             iter.remove();
         }
     }
 
-    void tick() {
-            Building building = Building.getBuilding();
-            if (letters.isEmpty()) {
-                // Return to MailRoom
-                if (room == building.NUMROOMS + 1) { // in right end column
-                    move(Building.Direction.DOWN);  //move towards mailroom
-                } else {
-                    move(Building.Direction.RIGHT); // move towards right end column
-                }
-            } else {
-                // Items to deliver
-                if (floor == letters.getFirst().myFloor()) {
-                    // On the right floor
-                    if (room == letters.getFirst().myRoom()) { //then deliver all relevant items to that room
-                        do {
-                            Simulation.deliver(letters.removeFirst());
-                        } while (!letters.isEmpty() && room == letters.getFirst().myRoom());
-                    } else {
-                        move(Building.Direction.RIGHT); // move towards next delivery
-                    }
-                } else {
-                    move(Building.Direction.UP); // move towards floor
-                }
-            }
+    void robotReturn(Robot robot, List<Robot> deactivatingRobots) {
+        Building building = Building.getBuilding();
+        int floor = robot.getFloor();
+        int room = robot.getRoom();
+        assert floor == 0 && room == building.NUMROOMS+1: format("robot returning from wrong place - floor=%d, room ==%d", floor, room);
+        assert robot.isEmpty() : "robot has returned still carrying at least one item";
+        building.remove(floor, room);
+        deactivatingRobots.add(robot);
     }
+
+    public abstract void tick();
 
     public String getId() {
         return id;
     }
 
     public int numItems () {
-        return letters.size();
+        return items.size();
     }
 
-    public void add(Letter item) {
-        letters.add(item);
+    public void add(MailItem item) {
+        items.add(item);
+        load += item.getWeight();
     }
 
+    public List<MailItem> getItems() {
+        return items;
+    }
+
+    public int getLoad() {
+        return load;
+    }
+
+    public void setLoad(int load) {
+        this.load = load;
+    }
+
+    public void resetLoad() {
+        this.load = 0;
+    }
     void sort() {
-        Collections.sort(letters);
+        Collections.sort(items);
     }
 
 }

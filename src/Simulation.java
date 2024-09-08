@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Simulation {
-    private static final Map<Integer, List<Letter>> waitingToArrive = new HashMap<>();
+    private static final Map<Integer, List<MailItem>> waitingToArrive = new HashMap<>();
     private static int time = 0;
     public final int endArrival;
     final public MailRoom mailroom;
@@ -13,18 +13,24 @@ public class Simulation {
     private static int deliveredCount = 0;
     private static int deliveredTotalTime = 0;
 
-    public static void deliver(Letter mailItem) {
+    public enum Mode {CYCLING, FLOORING}
+
+    private Queue<Robot> idleRobots;
+    private List<Robot> activeRobots;
+    private List<Robot> deactivatingRobots; // Don't treat a robot as both active and idle by swapping directly
+
+    public static void deliver(MailItem mailItem) {
         System.out.println("Delivered: " + mailItem);
         deliveredCount++;
         deliveredTotalTime += now() - mailItem.myArrival();
     }
 
-    void addToArrivals(int arrivalTime, Letter item) {
+    void addToArrivals(int arrivalTime, MailItem item) {
         System.out.println(item.toString());
         if (waitingToArrive.containsKey(arrivalTime)) {
             waitingToArrive.get(arrivalTime).add(item);
         } else {
-            LinkedList<Letter> items = new LinkedList<>();
+            LinkedList<MailItem> items = new LinkedList<>();
             items.add(item);
             waitingToArrive.put(arrivalTime, items);
         }
@@ -42,24 +48,31 @@ public class Simulation {
         int numRobots = Integer.parseInt(properties.getProperty("robot.number"));
         int robotCapacity = Integer.parseInt(properties.getProperty("robot.capacity"));
         timeout = Integer.parseInt(properties.getProperty("timeout"));
-        MailRoom.Mode mode = MailRoom.Mode.valueOf(properties.getProperty("mode"));
+        Mode mode = Mode.valueOf(properties.getProperty("mode"));
 
         Building.initialise(numFloors, numRooms);
         Building building = Building.getBuilding();
-        mailroom = new MailRoom(building.NUMFLOORS, numRobots);
-        for (int i = 0; i < numLetters; i++) { //Generate letters
-            int arrivalTime = random.nextInt(endArrival)+1;
-            int floor = random.nextInt(building.NUMFLOORS)+1;
-            int room = random.nextInt(building.NUMROOMS)+1;
-            addToArrivals(arrivalTime, new Letter(floor, room, arrivalTime));
+
+        mailroom = new MailRoom(building.NUMFLOORS, robotCapacity);
+        generateLetters(numLetters, random, building);
+        generateParcel(numParcels, random, building, maxWeight);
+
+        idleRobots = new LinkedList<>();
+        activeRobots = new LinkedList<>();
+        deactivatingRobots = new LinkedList<>();
+
+
+
+        switch(mode) {
+            case Mode.FLOORING -> {
+                for (int i = 0; i < numRobots; i++)
+                    activeRobots.add(new CyclingRobot(this));
+            }
+            case Mode.CYCLING -> {
+                System.out.println("wa");
+            }
         }
-        for (int i = 0; i < numParcels; i++) { // Generate parcels
-            int arrivalTime = random.nextInt(endArrival)+1;
-            int floor = random.nextInt(building.NUMFLOORS)+1;
-            int room = random.nextInt(building.NUMROOMS)+1;
-            int weight = random.nextInt(maxWeight)+1;
-            // What am I going to do with all these values?
-        }
+
     }
 
     public static int now() { return time; }
@@ -69,8 +82,20 @@ public class Simulation {
         if (waitingToArrive.containsKey(time))
             mailroom.arrive(waitingToArrive.get(time));
         // Internal events
-        mailroom.tick();
+
+        for (Robot activeRobot : activeRobots) {
+            System.out.printf("About to tick: " + activeRobot.toString() + "\n"); activeRobot.tick();
         }
+        robotDispatch();  // dispatch a robot if conditions are met
+        // These are returning robots who shouldn't be dispatched in the previous step
+        ListIterator<Robot> iter = deactivatingRobots.listIterator();
+        while (iter.hasNext()) {  // In timestamp order
+            Robot robot = iter.next();
+            iter.remove();
+            activeRobots.remove(robot);
+            idleRobots.add(robot);
+        }
+    }
 
     void run() {
         while (time++ <= endArrival || mailroom.someItems()) {
@@ -85,4 +110,44 @@ public class Simulation {
                 deliveredCount, (float) deliveredTotalTime/deliveredCount);
     }
 
+    private void generateLetters(int numLetters, Random random, Building building) {
+        for (int i = 0; i < numLetters; i++) { //Generate letters
+            int arrivalTime = random.nextInt(endArrival)+1;
+            int floor = random.nextInt(building.NUMFLOORS)+1;
+            int room = random.nextInt(building.NUMROOMS)+1;
+            addToArrivals(arrivalTime, new Letter(floor, room, arrivalTime));
+        }
+    }
+
+    private void generateParcel(int numParcels, Random random, Building building, int maxWeight) {
+        for (int i = 0; i < numParcels; i++) { // Generate parcels
+            int arrivalTime = random.nextInt(endArrival)+1;
+            int floor = random.nextInt(building.NUMFLOORS)+1;
+            int room = random.nextInt(building.NUMROOMS)+1;
+            int weight = random.nextInt(maxWeight)+1;
+            addToArrivals(arrivalTime, new Parcel(floor, room, arrivalTime, weight));
+        }
+    }
+
+    void robotDispatch() { // Can dispatch at most one robot; it needs to move out of the way for the next
+        System.out.println("Dispatch at time = " + now());
+        // Need an idle robot and space to dispatch (could be a traffic jam)
+        if (!idleRobots.isEmpty() && !Building.getBuilding().isOccupied(0,0)) {
+            int fwei = mailroom.floorWithEarliestItem();
+            if (fwei >= 0) {  // Need an item or items to deliver, starting with earliest
+                Robot robot = idleRobots.remove();
+                mailroom.loadRobot(fwei, robot);
+                // Room order for left to right delivery
+                robot.sort();
+                activeRobots.add(robot);
+                System.out.println("Dispatch @ " + now() +
+                        " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
+                robot.place(0, 0);
+            }
+        }
+    }
+
+    public List<Robot> getDeactivatingRobots() {
+        return deactivatingRobots;
+    }
 }
