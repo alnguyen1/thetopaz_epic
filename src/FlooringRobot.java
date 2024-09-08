@@ -1,67 +1,56 @@
-public class FlooringRobot extends Robot{
+public class FlooringRobot extends Robot {
     private boolean waitingLeft;
     private boolean waitingRight;
 
-    private boolean travellingLeft;
-    private boolean travellingRight;
+    enum State {
+        IDLE,
+        TRAVEL_LEFT,
+        TRAVEL_RIGHT
+    }
 
     private int arrivalLeft;
     private int arrivalRight;
+    private State state;
+
     public FlooringRobot(Simulation simulation) {
         super(simulation);
         this.waitingLeft = false;
         this.waitingRight = false;
-        this.travellingLeft = false;
-        this.travellingRight = false;
+        state = State.IDLE;
     }
 
     @Override
     public void tick() {
         if (getItems().isEmpty()) {
-
-            // Handle travelling towards the left or right
-            if (travellingLeft) {
-                if (getRoom() > 1) {
-                    move(Building.Direction.LEFT);
-                } else {
-                    // Reached left side, interact with ColumnRobot
-                    travellingLeft = false;
-
-                }
-            } else if (travellingRight) {
-                if (getRoom() < Building.getBuilding().NUMROOMS) {
-                    move(Building.Direction.RIGHT);
-                } else {
-                    // Reached right side, interact with ColumnRobot
-                    travellingRight = false;
-                    // Transfer with ColumnRobot logic goes here
-                }
-            }
+            state = State.IDLE;
 
             // Handle waiting status
-            else if (waitingLeft && !waitingRight) {
-                move(Building.Direction.LEFT);
+            if (waitingLeft && !waitingRight) {
+                state = State.TRAVEL_LEFT;
                 this.waitingLeft = false;
-                this.travellingLeft = true;
             } else if (!waitingLeft && waitingRight) {
-                move(Building.Direction.RIGHT);
+                state = State.TRAVEL_RIGHT;
                 this.waitingRight = false;
-                this.travellingRight = true;
             }
-
             // Both waiting, choose based on arrival times
             else if (waitingLeft && waitingRight) {
                 if (arrivalLeft < arrivalRight) {
                     move(Building.Direction.LEFT);
                     this.waitingLeft = false;
-                    this.travellingLeft = true;
+                    state = State.TRAVEL_LEFT;
                 } else {
                     move(Building.Direction.RIGHT);
                     this.waitingRight = false;
-                    this.travellingRight = true;
+                    state = State.TRAVEL_RIGHT;
                 }
             }
         } else {
+            if(getRoom() == 1) {
+                state = State.TRAVEL_RIGHT;
+            }
+            if(getRoom() == Building.getBuilding().NUMROOMS) {
+                state = State.TRAVEL_LEFT;
+            }
             // Delivering items to rooms
             if (getRoom() == getItems().getFirst().myRoom()) {
                 // Deliver all relevant items to the room
@@ -70,14 +59,26 @@ public class FlooringRobot extends Robot{
                     setLoad(getLoad() - currentItem.getWeight());
                     Simulation.deliver(currentItem);
                 } while (!getItems().isEmpty() && getRoom() == getItems().getFirst().myRoom());
-            } else {
-                // Keep travelling in the current direction
-                if (travellingLeft) {
-                    move(Building.Direction.LEFT);
-                } else if (travellingRight) {
-                    move(Building.Direction.RIGHT);
-                }
             }
+        }
+
+        switch (state) {
+            case TRAVEL_LEFT:
+                if (getRoom() > 1) {
+                    move(Building.Direction.LEFT);
+                } else {
+                    state = State.IDLE;
+                }
+                break;
+            case TRAVEL_RIGHT:
+                if (getRoom() < Building.getBuilding().NUMROOMS) {
+                    move(Building.Direction.RIGHT);
+                } else {
+                    state = State.IDLE;
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -105,5 +106,9 @@ public class FlooringRobot extends Robot{
 
     public void setArrivalRight(int arrivalRight) {
         this.arrivalRight = arrivalRight;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 }

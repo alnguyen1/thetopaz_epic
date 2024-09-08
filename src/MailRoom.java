@@ -1,7 +1,5 @@
 import java.util.*;
 
-import static java.lang.String.format;
-
 public class MailRoom {
 
     List<MailItem>[] waitingForDelivery;

@@ -15,7 +15,7 @@ public class MailItem implements Comparable<MailItem>{
     }
 
     public String toString() {
-        return STR."Floor: \{floor}, Room: \{room}, Arrival: \{arrival} ,";
+        return "Floor: " + floor + "Room: " + room + "Arrival: " + arrival;
     }
 
     int myFloor() { return floor; }

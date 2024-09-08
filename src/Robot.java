@@ -63,6 +63,8 @@ public abstract class Robot implements Tickable{
             this.add(item); //Hand it over
             iter.remove();
         }
+        robot.setLoad(0);
+
     }
 
     void robotReturn(Robot robot, List<Robot> deactivatingRobots) {
