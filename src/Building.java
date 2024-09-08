@@ -1,5 +1,9 @@
 import static java.lang.String.format;
 
+/**
+ * [Tue16:15] Team 04
+ * Unaltered Building Class.
+ */
 public class Building {
     private static boolean initialised = false;
     private static Building singleton = null;

@@ -1,5 +1,8 @@
-import java.util.List;
-
+/**
+ * [Tue16:15] Team 04
+ * An extension of Robot for the columns of the Flooring mode.
+ * Contains a isWaiting flag and a unique tick function.
+ */
 public class ColumnRobot extends Robot {
     private final Side side;
     private boolean isWaiting;

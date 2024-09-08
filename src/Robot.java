@@ -5,6 +5,13 @@ import java.util.ListIterator;
 
 import static java.lang.String.format;
 
+/**
+ * An abstract class for Robots that can be extended with inheritance.
+ * Class is in charge of storing robot information and the robot's position.
+ * Implements Tickable as it is a simulation unit.
+ * Notably, the constructor takes in Simulation, so that Robot has access to all the information it needs.
+ */
+
 public abstract class Robot implements Tickable{
     private static int count = 1;
     final private String id;
@@ -15,19 +22,26 @@ public abstract class Robot implements Tickable{
     final private List<MailItem> items = new ArrayList<>();
     private int minArrivalTime;
 
-    public String toString() {
-        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + load;
-    }
-
+    // constructor, takes in simulation
     Robot(Simulation simulation) {
         this.id = "R" + count++;
         this.simulation = simulation;
     }
 
-    int getFloor() { return floor; }
-    int getRoom() { return room; }
-    boolean isEmpty() { return items.isEmpty(); }
+    // returning a robot back into the mailroom.
+    void robotReturn(Robot robot, List<Robot> deactivatingRobots) {
+        Building building = Building.getBuilding();
+        int floor = robot.getFloor();
+        int room = robot.getRoom();
+        assert floor == 0 && room == building.NUMROOMS+1: format("robot returning from wrong place - floor=%d, room ==%d", floor, room);
+        assert robot.isEmpty() : "robot has returned still carrying at least one item";
+        building.remove(floor, room);
 
+        // goes to deactivating robots which then goes into mailroom
+        deactivatingRobots.add(robot);
+    }
+
+    // place the robot to a position in the building
     public void place(int floor, int room) {
         Building building = Building.getBuilding();
         building.place(floor, room, id);
@@ -35,6 +49,7 @@ public abstract class Robot implements Tickable{
         this.room = room;
     }
 
+    // function to move, tied to the building grid
     public void move(Building.Direction direction) {
         Building building = Building.getBuilding();
         int dfloor, droom;
@@ -55,7 +70,8 @@ public abstract class Robot implements Tickable{
         }
     }
 
-    void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
+    // Transfers every item assuming receiving robot has capacity
+    void transfer(Robot robot) {
         ListIterator<MailItem> iter = robot.items.listIterator();
         while(iter.hasNext()) {
             MailItem item = iter.next();
@@ -63,68 +79,48 @@ public abstract class Robot implements Tickable{
             iter.remove();
         }
         robot.setLoad(0);
-
     }
 
-    void robotReturn(Robot robot, List<Robot> deactivatingRobots) {
-        Building building = Building.getBuilding();
-        int floor = robot.getFloor();
-        int room = robot.getRoom();
-        assert floor == 0 && room == building.NUMROOMS+1: format("robot returning from wrong place - floor=%d, room ==%d", floor, room);
-        assert robot.isEmpty() : "robot has returned still carrying at least one item";
-        building.remove(floor, room);
-        deactivatingRobots.add(robot);
-    }
-
-    public abstract void tick();
-
-    public String getId() {
-        return id;
-    }
-
-    public int numItems () {
-        return items.size();
-    }
-
+    // add an item to the robot
     public void add(MailItem item) {
         items.add(item);
         load += item.getWeight();
     }
 
+    // abstract function to tick
+    public abstract void tick();
+
+    // to string
+    public String toString() {
+        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + load;
+    }
+
+    // getters, setters and other misc
+    public String getId() {
+        return id;
+    }
+    public int numItems () {
+        return items.size();
+    }
     public int getMinArrivalTime() {
         return minArrivalTime;
     }
-
     public void setMinArrivalTime(int newMin) {
         this.minArrivalTime = newMin;
     }
     public List<MailItem> getItems() {
         return items;
     }
-
-
     public int getLoad() {
         return load;
     }
-
     public void setLoad(int load) {
         this.load = load;
-    }
-
-    public void resetLoad() {
-        this.load = 0;
     }
     void sort() {
         Collections.sort(items);
     }
-
-    public void setwaitingLeft(Boolean bool) {
-        return;
-    }
-    public void setwaitingRight(Boolean bool) {
-        return;
-    }
-    public Simulation getSimulation() {
-        return simulation;
-    }
+    int getFloor() { return floor; }
+    int getRoom() { return room; }
+    boolean isEmpty() { return items.isEmpty(); }
 }

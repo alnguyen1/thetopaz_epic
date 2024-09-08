@@ -1,4 +1,9 @@
-public class MailItem implements Comparable<MailItem>{
+/**
+ * [Tue16:15] Team 04
+ * Abstract class for MailItems, to be extended and implemented by concrete classes.
+ * Basic data for MailItems stored here.
+ */
+public abstract class MailItem implements Comparable<MailItem>{
     private final int floor;
     private final int room;
     private final int arrival;

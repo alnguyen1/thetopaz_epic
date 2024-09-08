@@ -3,6 +3,13 @@
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Simulation class looks to serve as the hub of all the information.
+ * Class is in charge of calling the ticks and running the simulation.
+ * Also reads properties in order to initialise the simulation.
+ *
+ */
+
 public class Simulation {
     private static final Map<Integer, List<MailItem>> waitingToArrive = new HashMap<>();
     private static int time = 0;
@@ -13,6 +20,7 @@ public class Simulation {
     private static int deliveredCount = 0;
     private static int deliveredTotalTime = 0;
 
+    // enum for the mode that wishes to be used. can be expanded on.
     public enum Mode {CYCLING, FLOORING}
 
     Mode mode;
@@ -21,12 +29,14 @@ public class Simulation {
     private List<Robot> activeRobots;
     private List<Robot> deactivatingRobots; // Don't treat a robot as both active and idle by swapping directly
 
+    // deliver a mail itme
     public static void deliver(MailItem mailItem) {
         System.out.println("Delivered: " + mailItem);
         deliveredCount++;
         deliveredTotalTime += now() - mailItem.myArrival();
     }
 
+    // add a mail item to arrivals
     void addToArrivals(int arrivalTime, MailItem item) {
         System.out.println(item.toString());
         if (waitingToArrive.containsKey(arrivalTime)) {
@@ -38,7 +48,10 @@ public class Simulation {
         }
     }
 
+    // constructor for the simulation
     Simulation(Properties properties) {
+
+        // read properties
         int seed = Integer.parseInt(properties.getProperty("seed"));
         Random random = new Random(seed);
         this.endArrival = Integer.parseInt(properties.getProperty("mail.endarrival"));
@@ -52,6 +65,7 @@ public class Simulation {
         timeout = Integer.parseInt(properties.getProperty("timeout"));
         mode = Mode.valueOf(properties.getProperty("mode"));
 
+        // initialise classes
         Building.initialise(numFloors, numRooms);
         Building building = Building.getBuilding();
 
@@ -64,6 +78,7 @@ public class Simulation {
         deactivatingRobots = new LinkedList<>();
 
 
+        // initialise robots based on the mode we have chosen
         switch(mode) {
             case Mode.CYCLING -> {
                 for (int i = 0; i < numRobots; i++) {
@@ -77,6 +92,7 @@ public class Simulation {
                 idleRobots.add(leftRobot);
                 idleRobots.add(rightRobot);
 
+                // one floor robot per floor
                 for (int i = 1; i < numRobots + 2; i++) {
                     FlooringRobot flooringRobot = new FlooringRobot(this,leftRobot,rightRobot);
                     flooringRobot.place(i,1);
@@ -86,8 +102,6 @@ public class Simulation {
         }
 
     }
-
-    public static int now() { return time; }
 
     void step() {
         // External events
@@ -113,8 +127,6 @@ public class Simulation {
 
     }
 
-
-
     void run() {
         while (time++ <= endArrival || mailroom.someItems()) {
             step();
@@ -128,6 +140,7 @@ public class Simulation {
                 deliveredCount, (float) deliveredTotalTime/deliveredCount);
     }
 
+    // function to generate letters
     private void generateLetters(int numLetters, Random random, Building building) {
         for (int i = 0; i < numLetters; i++) { //Generate letters
             int arrivalTime = random.nextInt(endArrival)+1;
@@ -137,6 +150,7 @@ public class Simulation {
         }
     }
 
+    // function to generate Parcels.
     private void generateParcel(int numParcels, Random random, Building building, int maxWeight) {
         for (int i = 0; i < numParcels; i++) { // Generate parcels
             int arrivalTime = random.nextInt(endArrival)+1;
@@ -147,6 +161,7 @@ public class Simulation {
         }
     }
 
+    // separate logic for dispatching robots for the mode selected.
     void robotDispatch() { // Can dispatch at most one robot; it needs to move out of the way for the next
         switch (mode) {
             case Mode.CYCLING -> {
@@ -172,6 +187,7 @@ public class Simulation {
                     if (!idleRobots.isEmpty() && (fwei >= 0)) {
                         ColumnRobot robot = (ColumnRobot) idleRobots.remove();
                         ColumnRobot.Side side = robot.getSide();
+                        // left robot can only be dispatched on the left
                         if (side == ColumnRobot.Side.LEFT) {
                             mailroom.loadRobot(fwei, robot);
                             robot.sort();
@@ -181,6 +197,7 @@ public class Simulation {
                                     " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
                             robot.place(0, 0);
                         }
+                        // right robot can only be dispatched on the right
                         if (side == ColumnRobot.Side.RIGHT) {
                             mailroom.loadRobot(fwei, robot);
                             robot.sort();
@@ -198,11 +215,11 @@ public class Simulation {
 
     }
 
+    // getters setters
+    public static int now() { return time; }
+
     public List<Robot> getDeactivatingRobots() {
         return deactivatingRobots;
     }
 
-    public List<Robot> getActiveRobots() {
-        return activeRobots;
-    }
 }

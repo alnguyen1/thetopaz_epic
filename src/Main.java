@@ -2,7 +2,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
+/**
+ * [Tue16:15] Team 04
+ * Entrypoint into the simulation.
+ * Unchanged from the source code.
+ */
 public class Main {
     public static final String DEFAULT_PROPERTIES_PATH = "properties/test.properties";
 

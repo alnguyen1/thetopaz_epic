@@ -1,14 +1,16 @@
 import java.util.*;
 
+/**
+ * [Tue16:15] Team 04
+ * Code largely unchanged from source code.
+ * Is no longer a simulation unit, but rather just a place to keep track of mail items.
+ */
 public class MailRoom {
 
     List<MailItem>[] waitingForDelivery;
     private final int maxCapacity;
 
-    Queue<Robot> idleRobots;
-    List<Robot> activeRobots;
-    List<Robot> deactivatingRobots; // Don't treat a robot as both active and idle by swapping directly
-
+    // checks to see if there are items still in the mail room.
     public boolean someItems() {
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
             if (!waitingForDelivery[i].isEmpty()) {
@@ -18,6 +20,7 @@ public class MailRoom {
         return false;
     }
 
+    // finds the floor with the earliest item.
     public int floorWithEarliestItem() {
         int floor = -1;
         int earliest = Simulation.now() + 1;
@@ -33,6 +36,7 @@ public class MailRoom {
         return floor;
     }
 
+    // default constructor
     MailRoom(int numFloors, int maxCapacity) {
         this.maxCapacity = maxCapacity;
         waitingForDelivery = new List[numFloors];
@@ -42,6 +46,7 @@ public class MailRoom {
         }
     }
 
+    // function to keep track of the items that arrive
     void arrive(List<MailItem> items) {
         for (MailItem item : items) {
             waitingForDelivery[item.myFloor()-1].add(item);
@@ -50,8 +55,7 @@ public class MailRoom {
         }
     }
 
-
-    // this function stays
+    // function to give the robots items.
     void loadRobot(int floor, Robot robot) {
         ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
         boolean firstItem = true;
@@ -62,7 +66,6 @@ public class MailRoom {
                     firstItem = false;
                     robot.setMinArrivalTime(item.myArrival());
                 }
-
                 robot.add(item); //Hand it over
                 iter.remove();
             }

@@ -4,7 +4,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import static java.lang.String.format;
-
+/**
+ * [Tue16:15] Team 04
+ * Unaltered Building Grid
+ */
 public class BuildingGrid {
     JFrame f;
     TableModel tm;

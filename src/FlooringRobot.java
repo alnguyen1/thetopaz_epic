@@ -1,13 +1,17 @@
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * [Tue16:15] Team 04
+ * An extension of Robot for the Floors of the Flooring mode.
+ * Points towards both ColumnRobots in order to keep track of if they are waiting or not.
+ */
 public class FlooringRobot extends Robot {
-    private boolean waitingLeft;
-    private boolean waitingRight;
-
     private final ColumnRobot leftColumnRobot;
     private final ColumnRobot rightColumnRobot;
+    private State state;
 
+    // Enum representing the states of a flooring robot.
     enum State {
         IDLE,
         COLLECTING_LEFT,
@@ -15,14 +19,12 @@ public class FlooringRobot extends Robot {
         DELIVERING_RIGHT,
         DELIVERING_LEFT
     }
-    private State state;
 
+    // constructor calls the column robots.
     public FlooringRobot(Simulation simulation, ColumnRobot leftColumnRobot, ColumnRobot rightColumnRobot) {
         super(simulation);
         this.leftColumnRobot = leftColumnRobot;
         this.rightColumnRobot = rightColumnRobot;
-        this.waitingLeft = false;
-        this.waitingRight = false;
         state = State.IDLE;
     }
 
@@ -31,14 +33,15 @@ public class FlooringRobot extends Robot {
 
         // if delivering continue delivering
         if (!getItems().isEmpty()) {
+
             // see if anything is deliverable
             List<MailItem> deliverableItems = new LinkedList<>();
-
             for (MailItem item : getItems()) {
                 if (item.myRoom() == getRoom()) {
                     deliverableItems.add(item);
                 }
             }
+            // deliver the things that are deliverable
             if (!deliverableItems.isEmpty()) {
                 do {
                     MailItem currentItem = deliverableItems.removeFirst();
@@ -46,10 +49,13 @@ public class FlooringRobot extends Robot {
                     setLoad(getLoad() - currentItem.getWeight());
                     Simulation.deliver(currentItem);
                 } while (!deliverableItems.isEmpty());
+
+                // if we delivered the last object, turn idle.
                 if (getItems().isEmpty()) {
                     state = State.IDLE;
                 }
             }
+
             // if nothing is deliverable, keep moving.
             else {
                 if(state == State.DELIVERING_LEFT) {
@@ -59,8 +65,6 @@ public class FlooringRobot extends Robot {
                 }
             }
         }
-
-
 
         // check to see if next to column robot that is waiting.
         else if (leftColumnRobot.isWaiting() && leftColumnRobot.getFloor() == getFloor() && getRoom() == 1) {
@@ -104,6 +108,7 @@ public class FlooringRobot extends Robot {
             }
         }
 
+        // check to see if it needs to move towards a robot
         else if (leftColumnRobot.isWaiting() && leftColumnRobot.getFloor() == getFloor()) {
             state = State.COLLECTING_LEFT;
             move(Building.Direction.LEFT);
@@ -114,31 +119,10 @@ public class FlooringRobot extends Robot {
             move(Building.Direction.RIGHT);
         }
 
+        // do nothing
         else{
             state = State.IDLE;
         }
 
-    }
-
-    @Override
-    public void setwaitingLeft(Boolean bool) {
-        this.waitingLeft = bool;
-    }
-
-    @Override
-    public void setwaitingRight(Boolean bool) {
-        this.waitingRight = bool;
-    }
-
-    public boolean isWaitingLeft() {
-        return waitingLeft;
-    }
-
-    public boolean isWaitingRight() {
-        return waitingRight;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 }

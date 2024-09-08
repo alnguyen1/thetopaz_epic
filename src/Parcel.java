@@ -1,3 +1,8 @@
+/**
+ * [Tue16:15] Team 04
+ * An extension of MailItem for Parcels.
+ * Keeps track of weight.
+ */
 public class Parcel extends MailItem {
 
     private final static String type = "Parcel";
