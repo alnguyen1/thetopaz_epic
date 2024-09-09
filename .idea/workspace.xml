@@ -6,23 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="ef32fcd6-4616-4be2-87c0-dada4e4599a5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Building.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Building.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/BuildingGrid.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/BuildingGrid.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/FlooringRobot.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/FlooringRobot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Letter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Letter.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/MailItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/MailItem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/MailRoom.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/MailRoom.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Parcel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Parcel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Simulation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Simulation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Building.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BuildingGrid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BuildingGrid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ColumnRobot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ColumnRobot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CyclingRobot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CyclingRobot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FlooringRobot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlooringRobot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Letter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Letter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MailItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MailItem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MailRoom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MailRoom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parcel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Robot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RowRobot.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Simulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Simulation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tickable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tickable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

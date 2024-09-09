@@ -30,10 +30,8 @@ public class FlooringRobot extends Robot {
 
     @Override
     public void tick() {
-
         // if delivering continue delivering
         if (!getItems().isEmpty()) {
-
             // see if anything is deliverable
             List<MailItem> deliverableItems = new LinkedList<>();
             for (MailItem item : getItems()) {
@@ -41,6 +39,7 @@ public class FlooringRobot extends Robot {
                     deliverableItems.add(item);
                 }
             }
+
             // deliver the things that are deliverable
             if (!deliverableItems.isEmpty()) {
                 do {
@@ -68,18 +67,12 @@ public class FlooringRobot extends Robot {
 
         // check to see if next to column robot that is waiting.
         else if (leftColumnRobot.isWaiting() && leftColumnRobot.getFloor() == getFloor() && getRoom() == 1) {
-            transfer(leftColumnRobot);
-            leftColumnRobot.setLoad(0);
-            leftColumnRobot.setWaiting(false);
-            state = State.DELIVERING_RIGHT;
+            transferLeft();
         }
 
         else if (rightColumnRobot.isWaiting() && rightColumnRobot.getFloor() == getFloor()
                             && getRoom() == Building.getBuilding().NUMROOMS) {
-            transfer(rightColumnRobot);
-            rightColumnRobot.setLoad(0);
-            rightColumnRobot.setWaiting(false);
-            state = State.DELIVERING_LEFT;
+            transferRight();
         }
 
         // if moving towards a robot
@@ -97,6 +90,7 @@ public class FlooringRobot extends Robot {
                             && rightColumnRobot.getFloor() == getFloor()) {
             int leftTime = leftColumnRobot.getMinArrivalTime();
             int rightTime = rightColumnRobot.getMinArrivalTime();
+
             // right is smaller means go right
             if(leftTime > rightTime) {
                 state = State.COLLECTING_RIGHT;
@@ -124,5 +118,18 @@ public class FlooringRobot extends Robot {
             state = State.IDLE;
         }
 
+    }
+    public void transferLeft() {
+        transfer(leftColumnRobot);
+        leftColumnRobot.setLoad(0);
+        leftColumnRobot.setWaiting(false);
+        state = State.DELIVERING_RIGHT;
+    }
+
+    public void transferRight() {
+        transfer(rightColumnRobot);
+        rightColumnRobot.setLoad(0);
+        rightColumnRobot.setWaiting(false);
+        state = State.DELIVERING_LEFT;
     }
 }

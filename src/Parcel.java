@@ -4,13 +4,17 @@
  * Keeps track of weight.
  */
 public class Parcel extends MailItem {
-
-    private final static String type = "Parcel";
     private final int weight;
 
     Parcel(int floor, int room, int arrival, int weight) {
         super(floor,room,arrival);
         this.weight = weight;
+    }
+
+    @Override
+    public void add(Robot robot) {
+        super.add(robot);
+        robot.setLoad(robot.getLoad() + weight);
     }
 
     @Override

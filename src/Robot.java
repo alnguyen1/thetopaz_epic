@@ -18,9 +18,10 @@ public abstract class Robot implements Tickable{
     private int floor;
     private int room;
     private int load;
+    private int minArrivalTime;
     final private Simulation simulation;
     final private List<MailItem> items = new ArrayList<>();
-    private int minArrivalTime;
+
 
     // constructor, takes in simulation
     Robot(Simulation simulation) {
@@ -71,20 +72,14 @@ public abstract class Robot implements Tickable{
     }
 
     // Transfers every item assuming receiving robot has capacity
-    void transfer(Robot robot) {
+    public void transfer(Robot robot) {
         ListIterator<MailItem> iter = robot.items.listIterator();
         while(iter.hasNext()) {
             MailItem item = iter.next();
-            this.add(item); //Hand it over
+            item.add(this); //Hand it over
             iter.remove();
         }
         robot.setLoad(0);
-    }
-
-    // add an item to the robot
-    public void add(MailItem item) {
-        items.add(item);
-        load += item.getWeight();
     }
 
     // abstract function to tick

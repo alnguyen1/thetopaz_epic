@@ -37,7 +37,7 @@ public class Simulation {
     }
 
     // add a mail item to arrivals
-    void addToArrivals(int arrivalTime, MailItem item) {
+    public void addToArrivals(int arrivalTime, MailItem item) {
         System.out.println(item.toString());
         if (waitingToArrive.containsKey(arrivalTime)) {
             waitingToArrive.get(arrivalTime).add(item);
@@ -103,7 +103,7 @@ public class Simulation {
 
     }
 
-    void step() {
+    public void step() {
         // External events
         if (waitingToArrive.containsKey(time))
             mailroom.arrive(waitingToArrive.get(time));

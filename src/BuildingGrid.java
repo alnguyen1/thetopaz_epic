@@ -9,8 +9,8 @@ import static java.lang.String.format;
  * Unaltered Building Grid
  */
 public class BuildingGrid {
-    JFrame f;
-    TableModel tm;
+    private JFrame f;
+    private TableModel tm;
     BuildingGrid(int NUMFLOORS, int NUMROOMS){
         f=new JFrame();
         Object objects[][];
@@ -64,7 +64,7 @@ public class BuildingGrid {
 
         }
 
-    void update(int floor, int room, String s) {
+    public void update(int floor, int room, String s) {
         String sfinal;
         if (room == 0 || room == Building.getBuilding().NUMROOMS+1) {
             sfinal = s.isEmpty() ? "#" : s;  // ladder

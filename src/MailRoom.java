@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class MailRoom {
 
-    List<MailItem>[] waitingForDelivery;
+    private List<MailItem>[] waitingForDelivery;
     private final int maxCapacity;
 
     // checks to see if there are items still in the mail room.
@@ -47,7 +47,7 @@ public class MailRoom {
     }
 
     // function to keep track of the items that arrive
-    void arrive(List<MailItem> items) {
+    public void arrive(List<MailItem> items) {
         for (MailItem item : items) {
             waitingForDelivery[item.myFloor()-1].add(item);
             System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %d\n",
@@ -56,7 +56,7 @@ public class MailRoom {
     }
 
     // function to give the robots items.
-    void loadRobot(int floor, Robot robot) {
+    public void loadRobot(int floor, Robot robot) {
         ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
         boolean firstItem = true;
         while (iter.hasNext()) {  // In timestamp order
@@ -66,7 +66,7 @@ public class MailRoom {
                     firstItem = false;
                     robot.setMinArrivalTime(item.myArrival());
                 }
-                robot.add(item); //Hand it over
+                item.add(robot); //Hand it over
                 iter.remove();
             }
         }

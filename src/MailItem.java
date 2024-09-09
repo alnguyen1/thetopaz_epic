@@ -19,6 +19,10 @@ public abstract class MailItem implements Comparable<MailItem>{
         this.arrival = arrival;
     }
 
+    public void add(Robot robot) {
+        robot.getItems().add(this);
+    }
+
     public String toString() {
         return "Floor: " + floor + ", Room: " + room + ", Arrival: " + arrival + ", Weight: " + getWeight();
     }
