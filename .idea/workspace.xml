@@ -4,25 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef32fcd6-4616-4be2-87c0-dada4e4599a5" name="Changes" comment="">
+    <list default="true" id="0bce60b4-1804-4a0c-ae9d-86bce6b26cb7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Building.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Building.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/BuildingGrid.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/BuildingGrid.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/FlooringRobot.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/FlooringRobot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/MailItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/MailItem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/MailRoom.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/MailRoom.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Parcel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Parcel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Robot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/thetopaz_epic/Simulation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/thetopaz_epic/Simulation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Building.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BuildingGrid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BuildingGrid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlooringRobot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlooringRobot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MailItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MailItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MailRoom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MailRoom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parcel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Robot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Simulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Simulation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/properties/test.properties" beforeDir="false" afterPath="$PROJECT_DIR$/properties/test.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,59 +20,38 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 5
-}</component>
-  <component name="ProjectId" id="2lnA9t9fFyr4caoB33E59RkbnJv" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2lpTsDc5HuTlPFpuaIvCYudMYxZ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/tlang/Desktop/thetopaz_epic/properties&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\tlang\Desktop\thetopaz_epic\properties" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="thetopaz_epic" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Main" />
-      </list>
-    </recent_temporary>
-  </component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-21.0.2-temurin-21.0.2-4caba194b151-7da56cdf" />
+        <option value="jdk-22-openjdk-22-3183f394aec4-bad0321e" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ef32fcd6-4616-4be2-87c0-dada4e4599a5" name="Changes" comment="" />
-      <created>1725805320625</created>
+      <changelist id="0bce60b4-1804-4a0c-ae9d-86bce6b26cb7" name="Changes" comment="" />
+      <created>1725876224637</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1725805320625</updated>
+      <updated>1725876224637</updated>
     </task>
     <servers />
   </component>
